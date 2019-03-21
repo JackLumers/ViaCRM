@@ -1,0 +1,30 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+</web-app>
+
+        <!-- *** Старая регистрация сервлетов (Servlet API 2)***-->
+
+        <!-- Здесь объявляется сервлет -->
+        <!--<servlet>-->
+        <!--<servlet-userName>HomeServlet</servlet-userName>-->
+        <!--<servlet-class>ru.jacklumers.servlets.HomeServlet/servlet-class>-->
+        <!--</servlet>-->
+
+        <!-- Здесь прописывается реакция сервлета на запросы -->
+        <!--<servlet-mapping>-->
+        <!--<servlet-userName>HomeServlet</servlet-userName>-->
+        <!--<url-pattern>/hello</url-pattern>-->
+        <!--</servlet-mapping>-->
+
+        <!--<servlet>-->
+        <!--<servlet-userName>ParametersTestServlet</servlet-userName>-->
+        <!--<servlet-class>ru.jacklumers.servlets.ParametersTestServlet</servlet-class>-->
+        <!--</servlet>-->
+
+        <!--<servlet-mapping>-->
+        <!--<servlet-userName>ParametersTestServlet</servlet-userName>-->
+        <!--<url-pattern>/calculateFunction</url-pattern>-->
+        <!--</servlet-mapping>-->
