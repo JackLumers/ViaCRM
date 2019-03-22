@@ -23,8 +23,7 @@ import java.util.Optional;
  */
 public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
 
-    /*  TODO: Сделать отображение преподавателей через Hibernate.
-     *      Если нужно, то переписать запросы так, чтобы новый mapping мог с ними работать */
+    // TODO: Сделать отображение через Hibernate.
 
     //language=SQL
     private final String SQL_SELECT_ALL =
@@ -69,7 +68,6 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     private JdbcTemplate jdbcTemplate;
     private Map<Long, Student> studentsMap = new HashMap<>();
     private Map<Long, Teacher> teachersMap = new HashMap<>();
-
     /**
      * Анонимный класс.
      * Интерфейс RawMapper позволяет описать правило отображения значений строк из ResultSet в Java-объект,
@@ -82,8 +80,21 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
      * rs и rowNum - это параметры функции mapRow,
      * объявление которой находится в интерфейсе RawMapper
      */
-    private RowMapper<Student> studentRowMapper = (ResultSet rs, int rowNum) ->
-    {
+    private RowMapper<Student> studentRowMapper = (rs, rowNum) -> {
+        return new Student(
+                rs.getLong("student_id"),
+                rs.getString("student_first_name"),
+                rs.getString("student_last_name"),
+                rs.getString("student_phone"),
+                rs.getString("student_city"),
+                rs.getString("student_street"),
+                rs.getString("student_house_num"),
+                rs.getString("student_corps"),
+                rs.getString("student_apartment_num"),
+                rs.getFloat("student_learning_rate"));
+    };
+
+    private RowMapper<Student> newTestRowMapper = (ResultSet rs, int rowNum) -> {
         Long studentId = rs.getLong("student_id");
         Long teacherId = rs.getLong("teacher_id");
 
@@ -101,7 +112,7 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
                     rs.getString("student_corps"),
                     rs.getString("student_apartment_num"),
                     rs.getFloat("student_learning_rate"),
-                    new HashMap<Teacher, DatedLesson>());
+                    new HashMap<DatedLesson, Teacher>());
             studentsMap.put(studentId, student);
         }
 
@@ -112,7 +123,7 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
                     studentId,
                     rs.getString("teacher_first_name"),
                     rs.getString("teacher_last_name"),
-                    new HashMap<Student, DatedLesson>());
+                    new HashMap<DatedLesson, Student>());
             teachersMap.put(teacherId, teacher);
         }
 
@@ -124,12 +135,11 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
 
         Teacher teacher = teachersMap.get(teacherId);
         Student student = studentsMap.get(studentId);
-        teacher.getDatedLessons().put(student, datedLesson);
-        student.getDatedLessons().put(teacher, datedLesson);
+        teacher.getDatedLessons().put(datedLesson, student);
+        student.getDatedLessons().put(datedLesson, teacher);
 
         return student;
     };
-
 
     /**
      * Конструктор для подключения к базе данных через интерфейс DataSource.
@@ -159,7 +169,7 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
 
     @Override
     public Optional<Student> find(Long id) {
-        jdbcTemplate.query(SQL_SELECT_STUDENT_WITH_DATED_LESSONS, studentRowMapper, id);
+        jdbcTemplate.query(SQL_SELECT_STUDENT_WITH_DATED_LESSONS, newTestRowMapper, id);
         return Optional.ofNullable(studentsMap.get(id));
     }
 

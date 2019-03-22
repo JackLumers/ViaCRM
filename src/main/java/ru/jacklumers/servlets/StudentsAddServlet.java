@@ -26,7 +26,7 @@ public class StudentsAddServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         //Загрузка файла настроек
-        Properties properties = PropertiesLoader.loadProperties("config", getServletContext().getRealPath("/WEB-INF/classes"));
+        Properties properties = PropertiesLoader.loadProperties("sys.properties", getServletContext().getRealPath("/WEB-INF/classes"));
         //Получение DataSource по данной конфигурации
         DataSource dataSource = DataSourceBuilder.buildDataSourceUsingProperties(properties);
         //Инициализация StudentsDao интерфейса для работы с объектами учеников

@@ -3,6 +3,7 @@ package ru.jacklumers.models;
 import java.util.Map;
 
 public class Student {
+
     private Long id;
     private String firstName;
     private String lastName;
@@ -13,8 +14,7 @@ public class Student {
     private String corps;
     private String apartmentNum;
     private Float learningRate;
-
-    private Map<Teacher, DatedLesson> datedLessons;
+    private Map<DatedLesson, Teacher> datedLessons;
 
     /**
      * Конструктор с указанием атрубутов сущности
@@ -35,7 +35,7 @@ public class Student {
     /**
      * Конструктор с указанием всех полей, включая назначенные занятия.
      */
-    public Student(Long id, String firstName, String lastName, String phone, String city, String street, String houseNum, String corps, String apartmentNum, Float learningRate, Map<Teacher, DatedLesson> datedLessons) {
+    public Student(Long id, String firstName, String lastName, String phone, String city, String street, String houseNum, String corps, String apartmentNum, Float learningRate, Map<DatedLesson, Teacher> datedLessons) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,8 +64,13 @@ public class Student {
         this.learningRate = learningRate;
     }
 
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -140,12 +145,28 @@ public class Student {
         this.learningRate = learningRate;
     }
 
-    public Map<Teacher, DatedLesson> getDatedLessons() {
+    public Map<DatedLesson, Teacher> getDatedLessons() {
         return datedLessons;
     }
 
-    public void setDatedLessons(Map<Teacher, DatedLesson> datedLessons) {
+    public void setDatedLessons(Map<DatedLesson, Teacher> datedLessons) {
         this.datedLessons = datedLessons;
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", houseNum='" + houseNum + '\'' +
+                ", corps='" + corps + '\'' +
+                ", apartmentNum='" + apartmentNum + '\'' +
+                ", learningRate=" + learningRate +
+                ", datedLessons=" + datedLessons +
+                '}';
+    }
 }

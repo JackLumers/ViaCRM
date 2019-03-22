@@ -8,8 +8,9 @@ import java.util.Properties;
 
 /**
  * Проверка кодировки запросов.
- * Если не в нужной кодировке, то осуществляем перевод в нее.
- * Кодировка записана в config.properties -> requests.encoding
+ * <p>
+ * Если запрос не в нужной кодировке, то осуществляем перевод в нее.
+ * Кодировка записана в файле sys.properties в пакете resources -> свойство requests.encoding
  */
 @WebFilter("/*")
 public class CharsetFilter implements Filter {
@@ -20,7 +21,7 @@ public class CharsetFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         try {
-            properties.load(new FileInputStream(filterConfig.getServletContext().getRealPath("/WEB-INF/classes/config.properties")));
+            properties.load(new FileInputStream(filterConfig.getServletContext().getRealPath("/WEB-INF/classes/sys.properties")));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

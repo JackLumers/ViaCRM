@@ -30,7 +30,7 @@ public interface StudentsDao extends CrudDao<Student> {
     /**
      * Найти учеников по данным аргументам.
      *
-     * @param columnsAndArgs - HashMap с названиями колонок в качестве ключей
+     * @param columnsAndArgs - Map с названиями колонок в качестве ключей
      *                              и аргументами запроса в качестве значений.
      * @return Ученики с данными значениями в данных колонках.
      */

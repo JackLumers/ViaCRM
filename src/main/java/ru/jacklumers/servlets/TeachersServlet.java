@@ -23,7 +23,7 @@ public class TeachersServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        Properties properties = PropertiesLoader.loadProperties("config", getServletContext().getRealPath("/WEB-INF/classes"));
+        Properties properties = PropertiesLoader.loadProperties("sys.properties", getServletContext().getRealPath("/WEB-INF/classes"));
         DataSource dataSource = DataSourceBuilder.buildDataSourceUsingProperties(properties);
         teachersDao = new TeachersDaoJdbcTemplateImpl(dataSource);
     }

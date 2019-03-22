@@ -10,7 +10,7 @@ public interface TeachersDao extends CrudDao<Teacher> {
     /**
      * Найти учителей по данным аргументам.
      *
-     * @param columnsAndArgs - HashMap с названиями колонок в качестве ключей
+     * @param columnsAndArgs - Map с названиями колонок в качестве ключей
      *                              и аргументами запроса в качестве значений.
      * @return Учителя с данными значениями в данных колонках.
      */

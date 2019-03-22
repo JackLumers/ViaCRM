@@ -20,7 +20,7 @@ public final class PropertiesLoader {
     public static Properties loadProperties(String fileName, String classesDirectoryRealPath) {
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream(classesDirectoryRealPath + "/" + fileName + ".properties"));
+            properties.load(new FileInputStream(classesDirectoryRealPath + "/" + fileName));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

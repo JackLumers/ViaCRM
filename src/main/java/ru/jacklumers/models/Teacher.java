@@ -7,7 +7,7 @@ public class Teacher {
     private String firstName;
     private String lastName;
 
-    private Map<Student, DatedLesson> datedLessons;
+    private Map<DatedLesson, Student> datedLessons;
 
     /**
      * Конструктор с указанием только атрибутов сущности
@@ -21,7 +21,7 @@ public class Teacher {
     /**
      * Конструктор с указанием всех полей, включая назначенные занятия
      */
-    public Teacher(Long id, String firstName, String lastName, Map<Student, DatedLesson> datedLessons) {
+    public Teacher(Long id, String firstName, String lastName, Map<DatedLesson, Student> datedLessons) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,11 +56,11 @@ public class Teacher {
         this.lastName = lastName;
     }
 
-    public Map<Student, DatedLesson> getDatedLessons() {
+    public Map<DatedLesson, Student> getDatedLessons() {
         return datedLessons;
     }
 
-    public void setDatedLessons(Map<Student, DatedLesson> datedLessons) {
+    public void setDatedLessons(Map<DatedLesson, Student> datedLessons) {
         this.datedLessons = datedLessons;
     }
 }

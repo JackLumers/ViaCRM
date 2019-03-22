@@ -26,15 +26,26 @@ public class StudentsServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         //Загрузка файла настроек
-        Properties properties = PropertiesLoader.loadProperties("config", getServletContext().getRealPath("/WEB-INF/classes"));
+        Properties sysProperties = PropertiesLoader.loadProperties("sys.properties", getServletContext().getRealPath("/WEB-INF/classes"));
         //Получение DataSource по данной конфигурации
-        DataSource dataSource = DataSourceBuilder.buildDataSourceUsingProperties(properties);
+        DataSource dataSource = DataSourceBuilder.buildDataSourceUsingProperties(sysProperties);
         //Инициализация StudentsDao интерфейса для работы с объектами учеников
         studentsDao = new StudentsDaoJdbcTemplateImpl(dataSource);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // TODO: Это для дебага, убрать.
+        //Тест объекта ученика с полной инфой
+        Student student;
+        Optional<Student> optionalStudent = studentsDao.find(11L);
+        if (optionalStudent.isPresent()){
+            student = optionalStudent.get();
+        }
+
+        int i = 0;
+        //-------------------------------
+
         List<Student> students;
 
         /* Возврат студентов зависит от параметров запроса
@@ -43,7 +54,6 @@ public class StudentsServlet extends HttpServlet {
          *
          * По этим данным соответственно составляется HashMap,
          * с помощью которого составляется запрос в БД */
-
         Enumeration<String> parametersNames = req.getParameterNames();
         Map<String, String> columnsArgsHashMap = new HashMap<>();
 
