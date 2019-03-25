@@ -67,7 +67,7 @@ public class StudentsAddServlet extends HttpServlet {
         try {
             learningRate = Float.parseFloat(learningRateAsString);
         } catch (NumberFormatException e){
-            System.out.println(e.getMessage());
+            System.out.println("Коэф. успеваемости не был заполнен");
         }
         studentsDao.save(new Student(firstName, secondName, phone, city, street, houseNum, corps, apartmentNum, learningRate));
     }

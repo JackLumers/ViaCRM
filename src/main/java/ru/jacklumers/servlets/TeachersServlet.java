@@ -33,12 +33,12 @@ public class TeachersServlet extends HttpServlet {
         List<Teacher> teachers;
 
         /* Возврат студентов зависит от параметров запроса
+
          * Название параметра = название колонки в базе данных
          * Значение параметра = искомое значение колонки в базе данных.
          *
          * По этим данным соответственно составляется HashMap,
          * с помощью которого составляется запрос в БД */
-
         Enumeration<String> parametersNames = req.getParameterNames();
         Map<String, String> columnsArgsHashMap = new HashMap<>();
 
@@ -54,7 +54,7 @@ public class TeachersServlet extends HttpServlet {
         }
 
         if (!columnsArgsHashMap.isEmpty()) { //Если HashMap не пустая
-            teachers = teachersDao.findAllByArgs(columnsArgsHashMap);
+            teachers = teachersDao.findAllWithOnlySelfAttributesByArgs(columnsArgsHashMap);
         } else {
             teachers = teachersDao.findAll();
         }

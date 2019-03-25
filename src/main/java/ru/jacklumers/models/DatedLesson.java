@@ -18,6 +18,15 @@ public class DatedLesson {
         this.teacher = teacher;
     }
 
+    /**
+     * Конструктор без указания id
+     */
+    public DatedLesson(Timestamp date, Student student, Teacher teacher) {
+        this.date = date;
+        this.student = student;
+        this.teacher = teacher;
+    }
+
     public Long getId() {
         return id;
     }

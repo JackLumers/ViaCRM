@@ -28,11 +28,12 @@ public interface StudentsDao extends CrudDao<Student> {
     List<Student> findAllByFirstName(String firstName);
 
     /**
-     * Найти учеников по данным аргументам.
+     * Найти учеников, отсортировав по заданным колонкам.
      *
-     * @param columnsAndArgs - Map с названиями колонок в качестве ключей
-     *                              и аргументами запроса в качестве значений.
+     * @param orderColumns - колонки по которым проводится сортировка
      * @return Ученики с данными значениями в данных колонках.
      */
-    List<Student> findAllByArgs(Map<String, String> columnsAndArgs);
+    List<Student> findAllByOrder(String[] orderColumns);
+
+    List<Student> findAllWithOnlySelfAttributesByArguments(Map<String, String> columnsAndArgs);
 }

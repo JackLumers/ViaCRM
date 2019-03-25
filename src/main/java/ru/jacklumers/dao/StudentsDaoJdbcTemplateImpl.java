@@ -8,11 +8,7 @@ import ru.jacklumers.models.Teacher;
 import ru.jacklumers.utils.SqlSelectQueryGenerator;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Реализация методов доступа к данным об учениках через JDBC Template.
@@ -23,23 +19,32 @@ import java.util.Optional;
  */
 public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
 
-    // TODO: Сделать отображение через Hibernate.
-
     //language=SQL
     private final String SQL_SELECT_ALL =
-            "SELECT * FROM student";
+            "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
+                    "LEFT JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
+                    "LEFT JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id";
 
     //language=SQL
     private final String SQL_SELECT_BY_ID =
-            "SELECT * FROM student WHERE student_id = ?";
+            "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
+                    "LEFT JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
+                    "LEFT JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id " +
+                    "WHERE student.student_id = ?";
 
     //language=SQL
     private final String SQL_SELECT_BY_FIRST_NAME =
-            "SELECT * FROM student WHERE student_first_name = ?";
+            "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
+                    "LEFT JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
+                    "LEFT JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id " +
+                    "WHERE student.student_first_name = ?";
 
     //language=SQL
     private final String SQL_SELECT_BY_LEARNING_RATE =
-            "SELECT * FROM student WHERE student_learning_rate = ?";
+            "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
+                    "LEFT JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
+                    "LEFT JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id " +
+                    "WHERE student.student_learning_rate = ?";
 
     //language=SQL
     private final String SQL_DELETE_BY_ID =
@@ -57,17 +62,15 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
                     "student_street, student_house_num, student_corps, student_apartment_num, student_learning_rate) " +
                     "= (?,?,?,?,?,?,?,?,?) WHERE student_id = ?";
 
-    //language=SQL
-    private final String SQL_SELECT_STUDENT_WITH_DATED_LESSONS =
-            "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
-                    "JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
-                    "JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id " +
-                    "WHERE student.student_id = ?";
-
-
     private JdbcTemplate jdbcTemplate;
-    private Map<Long, Student> studentsMap = new HashMap<>();
-    private Map<Long, Teacher> teachersMap = new HashMap<>();
+    private DatedLessonsDao datedLessonsDao;
+
+    /* Map'ы для временного хранения отображенных сущностей.
+     * Очищаются после отображения ResultSet'а одной транзакции,
+     * чтобы всегда содержать актуальные данные */
+    private Map<Long, Student> studentMap = new HashMap<>();
+    private Map<Long, DatedLesson> datedLessonMap = new HashMap<>();
+
     /**
      * Анонимный класс.
      * Интерфейс RawMapper позволяет описать правило отображения значений строк из ResultSet в Java-объект,
@@ -80,7 +83,77 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
      * rs и rowNum - это параметры функции mapRow,
      * объявление которой находится в интерфейсе RawMapper
      */
-    private RowMapper<Student> studentRowMapper = (rs, rowNum) -> {
+    private RowMapper<Student> rowMapper = (rs, rowNum) -> {
+        Long studentId = rs.getLong("student_id");
+        Long datedLessonId = rs.getLong("dated_lesson_id");
+
+        Student student;
+
+        // Если есть у ученика есть назначенное занятие,
+        // то отображаем его с преподавателем этого занятия
+        if (datedLessonId != 0) {
+            DatedLesson datedLesson;
+            /* Проверка, был ли отображен урок до этого.
+             * Будет работать в случае обработки группы студентов
+             * по типу "все студенты с данным назначенным занятием" */
+            if (!datedLessonMap.containsKey(datedLessonId)) {
+                Optional<DatedLesson> datedLessonOptional = datedLessonsDao.find(datedLessonId);
+                datedLesson = datedLessonOptional.get();
+                datedLessonMap.put(datedLessonId, datedLesson);
+
+            }
+            /* Если этот урок уже был обработан до этого, то можно его использовать повторно. */
+            else {
+                datedLesson = datedLessonMap.get(datedLessonId);
+            }
+
+            student = new Student(
+                    studentId,
+                    rs.getString("student_first_name"),
+                    rs.getString("student_last_name"),
+                    rs.getString("student_phone"),
+                    rs.getString("student_city"),
+                    rs.getString("student_street"),
+                    rs.getString("student_house_num"),
+                    rs.getString("student_corps"),
+                    rs.getString("student_apartment_num"),
+                    rs.getFloat("student_learning_rate"),
+                    new HashMap<DatedLesson, Teacher>());
+            student.getDatedLessons().put(datedLesson, datedLesson.getTeacher());
+            studentMap.put(studentId, student);
+            return student;
+        }
+        // Иначе отображаем ученика без назначенных уроков
+        else {
+            // Если ученик еще не был отображен, то отображаем и добавляем в Map
+            if (!studentMap.containsKey(studentId)) {
+                student = new Student(
+                        studentId,
+                        rs.getString("student_first_name"),
+                        rs.getString("student_last_name"),
+                        rs.getString("student_phone"),
+                        rs.getString("student_city"),
+                        rs.getString("student_street"),
+                        rs.getString("student_house_num"),
+                        rs.getString("student_corps"),
+                        rs.getString("student_apartment_num"),
+                        rs.getFloat("student_learning_rate"),
+                        new HashMap<DatedLesson, Teacher>());
+                studentMap.put(studentId, student);
+                return student;
+            }
+            // Идеальный случай, когда у ученика нет назначенных уроков и он уже был отображен ранее
+            else {
+                return studentMap.get(studentId);
+            }
+        }
+    };
+
+    /**
+     * RawMapper, предназначенный для отображения сущности,
+     * включая только её собственные атрибуты. Т.е. без отображения свзяей с другими сущностями.
+     */
+    private RowMapper<Student> onlySelfAttributesRawMapper = (rs, rowNum) -> {
         return new Student(
                 rs.getLong("student_id"),
                 rs.getString("student_first_name"),
@@ -94,53 +167,6 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
                 rs.getFloat("student_learning_rate"));
     };
 
-    private RowMapper<Student> newTestRowMapper = (ResultSet rs, int rowNum) -> {
-        Long studentId = rs.getLong("student_id");
-        Long teacherId = rs.getLong("teacher_id");
-
-        /* Проверяем, есть ли этот студент уже в studentsMap,
-         * и если нет, то добавляем */
-        if (!studentsMap.containsKey(studentId)) {
-            Student student = new Student(
-                    studentId,
-                    rs.getString("student_first_name"),
-                    rs.getString("student_last_name"),
-                    rs.getString("student_phone"),
-                    rs.getString("student_city"),
-                    rs.getString("student_street"),
-                    rs.getString("student_house_num"),
-                    rs.getString("student_corps"),
-                    rs.getString("student_apartment_num"),
-                    rs.getFloat("student_learning_rate"),
-                    new HashMap<DatedLesson, Teacher>());
-            studentsMap.put(studentId, student);
-        }
-
-        /* Проверяем, есть ли этот преподаватель уже в teachersMap,
-         * и если нет, то добавляем */
-        if (!teachersMap.containsKey(teacherId)) {
-            Teacher teacher = new Teacher(
-                    studentId,
-                    rs.getString("teacher_first_name"),
-                    rs.getString("teacher_last_name"),
-                    new HashMap<DatedLesson, Student>());
-            teachersMap.put(teacherId, teacher);
-        }
-
-        DatedLesson datedLesson = new DatedLesson(
-                rs.getLong("dated_lesson_id"),
-                rs.getTimestamp("dated_lesson_date"),
-                studentsMap.get(studentId),
-                teachersMap.get(teacherId));
-
-        Teacher teacher = teachersMap.get(teacherId);
-        Student student = studentsMap.get(studentId);
-        teacher.getDatedLessons().put(datedLesson, student);
-        student.getDatedLessons().put(datedLesson, teacher);
-
-        return student;
-    };
-
     /**
      * Конструктор для подключения к базе данных через интерфейс DataSource.
      * SQLException отлавливется в JdbcTemplate
@@ -150,27 +176,42 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
      */
     public StudentsDaoJdbcTemplateImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        datedLessonsDao = new DatedLessonsJdbcTemplateImpl(dataSource);
+    }
+
+    @Override
+    public List<Student> findAll() {
+        jdbcTemplate.query(SQL_SELECT_ALL, rowMapper);
+        return getAllMappedValuesAndCleanMaps();
     }
 
     @Override
     public List<Student> findAllByFirstName(String firstName) {
-        return jdbcTemplate.query(SQL_SELECT_BY_FIRST_NAME, studentRowMapper, firstName);
+        jdbcTemplate.query(SQL_SELECT_BY_FIRST_NAME, rowMapper, firstName);
+        return getAllMappedValuesAndCleanMaps();
     }
 
     @Override
     public List<Student> findAllByLearningRate(Float learningRate) {
-        return jdbcTemplate.query(SQL_SELECT_BY_LEARNING_RATE, studentRowMapper, learningRate);
+        jdbcTemplate.query(SQL_SELECT_BY_LEARNING_RATE, rowMapper, learningRate);
+        return getAllMappedValuesAndCleanMaps();
     }
 
     @Override
-    public List<Student> findAllByArgs(Map<String, String> columnsAndArgsHashMap) {
-        return jdbcTemplate.query(SqlSelectQueryGenerator.generateSelectQuery("student", columnsAndArgsHashMap), studentRowMapper);
+    public List<Student> findAllByOrder(String[] orderColumns) {
+        jdbcTemplate.query(SqlSelectQueryGenerator.addOrderToQuery(SQL_SELECT_ALL, orderColumns), rowMapper);
+        return getAllMappedValuesAndCleanMaps();
+    }
+
+    @Override
+    public List<Student> findAllWithOnlySelfAttributesByArguments(Map<String, String> columnsAndArgs) {
+        return jdbcTemplate.query(SqlSelectQueryGenerator.generateSelectQuery("student", columnsAndArgs), onlySelfAttributesRawMapper);
     }
 
     @Override
     public Optional<Student> find(Long id) {
-        jdbcTemplate.query(SQL_SELECT_STUDENT_WITH_DATED_LESSONS, newTestRowMapper, id);
-        return Optional.ofNullable(studentsMap.get(id));
+        jdbcTemplate.query(SQL_SELECT_BY_ID, rowMapper, id);
+        return getMappedValueAndCleanMaps(id);
     }
 
     @Override
@@ -189,26 +230,41 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
 
     @Override
     public void update(Student studentWithId) {
-        jdbcTemplate.update(SQL_UPDATE_STUDENT_BY_ID,
-                studentWithId.getFirstName(),
-                studentWithId.getLastName(),
-                studentWithId.getPhone(),
-                studentWithId.getCity(),
-                studentWithId.getStreet(),
-                studentWithId.getHouseNum(),
-                studentWithId.getCorps(),
-                studentWithId.getApartmentNum(),
-                studentWithId.getLearningRate(),
-                studentWithId.getId());
+        if (studentWithId.getId() == null) {
+            throw new NullPointerException
+                    ("This model object has no id, but you are trying to update entity by it's id");
+        } else {
+            jdbcTemplate.update(SQL_UPDATE_STUDENT_BY_ID,
+                    studentWithId.getFirstName(),
+                    studentWithId.getLastName(),
+                    studentWithId.getPhone(),
+                    studentWithId.getCity(),
+                    studentWithId.getStreet(),
+                    studentWithId.getHouseNum(),
+                    studentWithId.getCorps(),
+                    studentWithId.getApartmentNum(),
+                    studentWithId.getLearningRate(),
+                    studentWithId.getId());
+        }
     }
 
+    //TODO: Проверить работу удаления
     @Override
     public void delete(Long id) {
-        jdbcTemplate.queryForObject(SQL_DELETE_BY_ID, studentRowMapper, id);
+        jdbcTemplate.queryForObject(SQL_DELETE_BY_ID, Student.class, id);
     }
 
-    @Override
-    public List<Student> findAll() {
-        return jdbcTemplate.query(SQL_SELECT_ALL, studentRowMapper);
+    private List<Student> getAllMappedValuesAndCleanMaps() {
+        List<Student> studentsList = new ArrayList<>(studentMap.values());
+        studentMap.clear();
+        datedLessonMap.clear();
+        return studentsList;
+    }
+
+    private Optional<Student> getMappedValueAndCleanMaps(Long id) {
+        Optional<Student> optionalStudent = Optional.ofNullable(studentMap.get(id));
+        studentMap.clear();
+        datedLessonMap.clear();
+        return optionalStudent;
     }
 }

@@ -35,44 +35,27 @@ public class StudentsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO: Это для дебага, убрать.
-        //Тест объекта ученика с полной инфой
-        Student student;
-        Optional<Student> optionalStudent = studentsDao.find(11L);
-        if (optionalStudent.isPresent()){
-            student = optionalStudent.get();
-        }
-
-        int i = 0;
-        //-------------------------------
-
         List<Student> students;
 
-        /* Возврат студентов зависит от параметров запроса
-         * Название параметра = название колонки в базе данных
-         * Значение параметра = искомое значение колонки в базе данных.
-         *
-         * По этим данным соответственно составляется HashMap,
-         * с помощью которого составляется запрос в БД */
+        /* Возврат студентов зависит от параметров запроса.
+           Если параметры поиска есть, то выводит только студентов,
+           найденных по этим параметрам */
         Enumeration<String> parametersNames = req.getParameterNames();
-        Map<String, String> columnsArgsHashMap = new HashMap<>();
-
+        Map<String, String> columnsAndArgs = new HashMap<>();
         if (parametersNames.hasMoreElements()) { //Если у запроса есть параметры
             while (parametersNames.hasMoreElements()) {
                 String parameterName = parametersNames.nextElement();
                 String arg = req.getParameter(parameterName);
-                if (arg != null && !arg.isEmpty()) { //Если значение параметра не пустое
-                    columnsArgsHashMap.put(parameterName, arg);
-                    req.setAttribute(parameterName, arg);
+                if (arg != null && !arg.isEmpty()) {
+                    req.setAttribute(parameterName, arg); // Чтобы во вью пользователя введенные параметры сохранялись
+                    columnsAndArgs.put(parameterName, arg);
                 }
             }
         }
-
-        if (!columnsArgsHashMap.isEmpty()) { //Если HashMap не пустая
-            students = studentsDao.findAllByArgs(columnsArgsHashMap);
-        } else {
+        if (!columnsAndArgs.isEmpty()) {
+            students = studentsDao.findAllWithOnlySelfAttributesByArguments(columnsAndArgs);
+        } else
             students = studentsDao.findAll();
-        }
 
         req.setAttribute("studentsFromServer", students);
         req.getServletContext().getRequestDispatcher("/jsp/students.jsp").forward(req, resp);

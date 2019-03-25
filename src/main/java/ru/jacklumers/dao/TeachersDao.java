@@ -14,5 +14,5 @@ public interface TeachersDao extends CrudDao<Teacher> {
      *                              и аргументами запроса в качестве значений.
      * @return Учителя с данными значениями в данных колонках.
      */
-    List<Teacher> findAllByArgs(Map<String, String> columnsAndArgs);
+    List<Teacher> findAllWithOnlySelfAttributesByArgs(Map<String, String> columnsAndArgs);
 }

@@ -7,15 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * TODO: Добавить вход в качестве препода/админа
+ * Сервлет для обработки входа на сайт
+ */
 @WebServlet("/signIn")
 public class LoginServlet extends HttpServlet {
 
-    //private UsersRepository usersRepository;
-
     @Override
     public void init() throws ServletException {
-        // TODO: Добавить вход в качестве препода/админа
-        //this.usersRepository = new UsersRepositoryInMemoryImpl();
+
     }
 
     @Override

@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <%-- Bootstrap --%>
@@ -8,8 +8,9 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
 
-    <title>Преподаватели</title>
+    <title>Назначенные уроки</title>
 </head>
+
 <body>
 <%-- Навигационная панель --%>
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
@@ -35,7 +36,7 @@
                     </a>
                 </div>
             </li>
-            <li class="nav-item dropdown active">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="teachersDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Преподаватели
@@ -49,8 +50,9 @@
                     </a>
                 </div>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button" data-toggle="dropdown"
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button"
+                   data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Занятия
                 </a>
@@ -67,7 +69,7 @@
     </div>
 </nav>
 
-<%-- Таблица учеников --%>
+<%-- Таблица занятий --%>
 <div class="container-fluid" style="margin-top: 75px">
     <table class="table table-hover">
         <%-- Поисковые формы --%>
@@ -77,18 +79,45 @@
             <th>
                 <form>
                     <div class="form-group">
-                        <label for="searchByFirstName">Имя</label>
-                        <input class="form-control" form="searchForm" type="search" id="searchByFirstName"
-                               name="teacher_first_name" value="${teacher_first_name}" autocomplete="off">
+                        <label for="searchByStudentFirstName">Имя ученика</label>
+                        <input class="form-control" form="searchForm" type="search" id="searchByStudentFirstName"
+                               name="student_first_name" value="${student_first_name}" autocomplete="off">
                     </div>
                 </form>
             </th>
             <th>
                 <form>
                     <div class="form-group">
-                        <label for="searchByLastName">Фамилия</label>
-                        <input class="form-control" form="searchForm" type="search" id="searchByLastName"
-                               name="teacher_last_name" value="${teacher_last_name}" autocomplete="off">
+                        <label for="searchByStudentLastName">Фамилия ученика</label>
+                        <input class="form-control" form="searchForm" type="search" id="searchByStudentLastName"
+                               name="student_last_name" value="${student_last_name}" autocomplete="off">
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form>
+                    <div class="form-group">
+                        <label for="searchByTeacherFirstName">Имя преподавателя</label>
+                        <input class="form-control" form="searchForm" type="search" id="searchByTeacherFirstName"
+                               name="student_phone" value="${teacher_first_name}" autocomplete="off">
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form>
+                    <div class="form-group">
+                        <label for="searchByTeacherLastName">Фамилия преподавателя</label>
+                        <input class="form-control" form="searchForm" type="search" id="searchByTeacherLastName"
+                               name="student_city" value="${teacher_last_name}" autocomplete="off">
+                    </div>
+                </form>
+            </th>
+            <th>
+                <form>
+                    <div class="form-group">
+                        <label for="searchByLessonDate">Дата занятия</label>
+                        <input class="form-control" form="searchForm" type="search" id="searchByLessonDate"
+                               name="student_street" value="${dated_lesson_date}" autocomplete="off">
                     </div>
                 </form>
             </th>
@@ -96,7 +125,7 @@
                 <%-- Форма поиска --%>
                 <div class="container-fluid">
                     <div class="raw">
-                        <form method="get" action="${pageContext.request.contextPath}/teachers" id="searchForm">
+                        <form method="get" action="${pageContext.request.contextPath}/datedLessons" id="searchForm">
                             <button type="submit" class="btn btn-info">Поиск</button>
                         </form>
                     </div>
@@ -107,11 +136,14 @@
         <%-- Переменная-счетчик num для обозначения номера строки в таблице --%>
         <c:set var="num" value="0"/>
         <%-- items - массив/список, по которому проходится forEach. Он берется из аттрибутов запроса --%>
-        <c:forEach items="${teachersFromServer}" var="teacher">
+        <c:forEach items="${datedLessonsFromServer}" var="datedLesson">
             <tr>
                 <td>${num = num + 1}</td>
-                <td>${teacher.firstName}</td>
-                <td>${teacher.lastName}</td>
+                <td>${datedLesson.student.firstName}</td>
+                <td>${datedLesson.student.lastName}</td>
+                <td>${datedLesson.teacher.firstName}</td>
+                <td>${datedLesson.teacher.lastName}</td>
+                <td>${datedLesson.date}</td>
             </tr>
         </c:forEach>
     </table>

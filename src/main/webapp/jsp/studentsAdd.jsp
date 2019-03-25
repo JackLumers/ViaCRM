@@ -44,8 +44,19 @@
                         преподавателя</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Занятия</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Занятия
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/datedLessons">
+                        Список занятий
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        possibleAction
+                    </a>
+                </div>
             </li>
         </ul>
     </div>
