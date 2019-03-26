@@ -19,18 +19,26 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
 
     //language=SQL
     private final String SQL_SELECT_ALL =
-            "SELECT  teacher.*, student.*, dated_lesson_id, dated_lesson_date " +
+            "SELECT teacher.*, student.*, dated_lesson_id, dated_lesson_date " +
                     "FROM teacher " +
                     "LEFT JOIN dated_lesson ON teacher.teacher_id = dated_lesson.teacher_id " +
                     "LEFT JOIN student ON student.student_id = dated_lesson.student_id";
 
     //language=SQL
     private final String SQL_SELECT_BY_ID =
-            "SELECT  teacher.*, student.*, dated_lesson_id, dated_lesson_date " +
+            "SELECT teacher.*, student.*, dated_lesson_id, dated_lesson_date " +
                     "FROM teacher " +
                     "LEFT JOIN dated_lesson ON teacher.teacher_id = dated_lesson.teacher_id " +
                     "LEFT JOIN student ON student.student_id = dated_lesson.student_id " +
                     "WHERE teacher.teacher_id = ?";
+
+    //language=SQL
+    private final String SQL_SELECT_BY_FULL_NAME =
+            "SELECT teacher.*, student.*, dated_lesson_id, dated_lesson_date " +
+                    "FROM teacher " +
+                    "LEFT JOIN dated_lesson ON teacher.teacher_id = dated_lesson.teacher_id " +
+                    "LEFT JOIN student ON student.student_id = dated_lesson.student_id " +
+                    "WHERE (teacher.teacher_first_name, teacher.teacher_last_name) = (?, ?)";
 
     //language=SQL
     private final String SQL_DELETE_BY_ID =
@@ -57,7 +65,7 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
     private Map<Long, DatedLesson> datedLessonMap = new HashMap<>();
 
     private RowMapper<Teacher> rowMapper = (rs, rowNum) -> {
-        Long teacherId = rs.getLong("student_id");
+        Long teacherId = rs.getLong("teacher_id");
         Long datedLessonId = rs.getLong("dated_lesson_id");
 
         Teacher teacher;
@@ -126,8 +134,19 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
 
     @Override
     public Optional<Teacher> find(Long id) {
-        jdbcTemplate.queryForObject(SQL_SELECT_BY_ID, onlySelfAttributesRowMapper, id);
+        jdbcTemplate.query(SQL_SELECT_BY_ID, onlySelfAttributesRowMapper, id);
         return getMappedValueAndCleanMaps(id);
+    }
+
+    @Override
+    public Optional<Teacher> findByFullName(String firstName, String lastName) {
+        jdbcTemplate.query(SQL_SELECT_BY_FULL_NAME, rowMapper, firstName, lastName);
+        try{
+            Teacher teacher = getAllMappedValuesAndCleanMaps().get(0);
+            return Optional.ofNullable(teacher);
+        } catch (IndexOutOfBoundsException e){ // Список оказался пустой, преподаватель не найден
+            return Optional.empty();
+        }
     }
 
     @Override

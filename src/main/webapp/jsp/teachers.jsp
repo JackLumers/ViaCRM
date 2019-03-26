@@ -58,8 +58,8 @@
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/datedLessons">
                         Список занятий
                     </a>
-                    <a class="dropdown-item" href="#">
-                        possibleAction
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/datedLessons/add">
+                        Назначить занятие
                     </a>
                 </div>
             </li>

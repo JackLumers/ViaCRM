@@ -1,7 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%-- Основные теги создания циклов, определения условий, вывода информации на страницу и т.д. --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <html>
 <head>
     <%-- Bootstrap --%>
@@ -9,9 +7,10 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-    <title>Добавление преподавателя</title>
-</head>
+    <title>Registered Users</title>
 
+    <title>Добавление занятия</title>
+</head>
 <body>
 <%-- Навигационная панель --%>
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
@@ -29,30 +28,26 @@
                     Ученики
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/students">
-                        Список учеников
-                    </a>
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/students/add">
-                        Добавить нового ученика
-                    </a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/students">Список учеников</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/students/add">Добавить нового
+                        ученика</a>
                 </div>
             </li>
-            <li class="nav-item dropdown active">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="teachersDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Преподаватели
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/teachers">
-                        Список преподавателей
-                    </a>
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/teachers/add">
-                        Добавить нового преподавателя
-                    </a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/teachers">Список
+                        преподавателей</a>
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/teachers/add">Добавить нового
+                        преподавателя</a>
                 </div>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button" data-toggle="dropdown"
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button"
+                   data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Занятия
                 </a>
@@ -75,24 +70,47 @@
     *   method - какой метод запроса будет использован
     *   action - на какой URL будет послан запрос
     --%>
-    <form method="post" action="${pageContext.request.contextPath}/teachers/add">
+    <form method="post" autocomplete="off" action="${pageContext.request.contextPath}/datedLessons/add">
         <div class="form-group">
             <div class="col-5">
-                <label for="firstName">Имя</label>
-                <input class="form-control" type="text" id="firstName" name="firstName" autocomplete="off">
+                <label for="studentFullName">Ученик</label>
+                <input class="form-control" type="text" id="studentFullName" name="studentFullName">
             </div>
         </div>
         <div class="form-group">
             <div class="col-5">
-                <label for="lastName">Фамилия</label>
-                <input class="form-control" type="text" id="lastName" name="lastName" autocomplete="off">
+                <label for="teacherFullName">Преподаватель</label>
+                <input class="form-control" type="text" id="teacherFullName" name="teacherFullName">
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <div class="col-5">
+                <label for="datedLessonDate">Дата занятия</label>
+                <input class="form-control" type="datetime-local" id="datedLessonDate" name="datedLessonDate">
+            </div>
         </div>
+
+        <button type="submit" class="btn btn-primary">Добавить</button>
     </form>
 </div>
+
+<%-- Autocomplete --%>
+<script type="text/javascript">
+    <%@include file="/javascript/autocompleteForInput.js"%>
+    var studentFullNamesArray = [];
+    var teacherFullNamesArray = [];
+    <jsp:useBean id="teacherFullNames" scope="request" type="java.util.List"/>
+    <c:forEach items="${teacherFullNames}" var="fullName">
+    teacherFullNamesArray.push('${fullName}');
+    </c:forEach>
+    <jsp:useBean id="studentFullNames" scope="request" type="java.util.List"/>
+    <c:forEach items="${studentFullNames}" var="fullName">
+    studentFullNamesArray.push('${fullName}');
+    </c:forEach>
+    autocomplete(document.getElementById("teacherFullName"), teacherFullNamesArray);
+    autocomplete(document.getElementById("studentFullName"), studentFullNamesArray);
+</script>
+
 
 <%-- Bootstrap --%>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

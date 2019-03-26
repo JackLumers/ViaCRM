@@ -4,6 +4,7 @@ import ru.jacklumers.models.Student;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Интерфейс DAO, включающий общие базовые
@@ -20,12 +21,17 @@ public interface StudentsDao extends CrudDao<Student> {
     List<Student> findAllByLearningRate(Float learningRate);
 
     /**
-     * Найти учеников по имени.
+     * Найти ученика по полному имени.
+     * <p>
+     * Учеников с одинаковыми именами и фамилиями пока не может быть, поэтому этот метод рабочий
+     * Но в будующем нужно заменить, создав уникальный отличительный признак, который будет видно
+     * на клиенткой части
      *
-     * @param firstName - имя.
-     * @return Ученики с таким именем.
+     * @param firstName - имя
+     * @param lastName  - фамилия
+     * @return Ученик с таким именем.
      */
-    List<Student> findAllByFirstName(String firstName);
+    Optional<Student> findByFullName(String firstName, String lastName);
 
     /**
      * Найти учеников, отсортировав по заданным колонкам.

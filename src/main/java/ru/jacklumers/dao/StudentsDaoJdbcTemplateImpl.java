@@ -33,11 +33,11 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
                     "WHERE student.student_id = ?";
 
     //language=SQL
-    private final String SQL_SELECT_BY_FIRST_NAME =
+    private final String SQL_SELECT_BY_FULL_NAME =
             "SELECT student.*, teacher.*, dated_lesson_id, dated_lesson_date FROM student " +
                     "LEFT JOIN dated_lesson ON student.student_id = dated_lesson.student_id " +
                     "LEFT JOIN teacher ON dated_lesson.teacher_id = teacher.teacher_id " +
-                    "WHERE student.student_first_name = ?";
+                    "WHERE (student.student_first_name, student.student_last_name) = (?, ?)";
 
     //language=SQL
     private final String SQL_SELECT_BY_LEARNING_RATE =
@@ -185,10 +185,22 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
         return getAllMappedValuesAndCleanMaps();
     }
 
+
     @Override
-    public List<Student> findAllByFirstName(String firstName) {
-        jdbcTemplate.query(SQL_SELECT_BY_FIRST_NAME, rowMapper, firstName);
-        return getAllMappedValuesAndCleanMaps();
+    public Optional<Student> find(Long id) {
+        jdbcTemplate.query(SQL_SELECT_BY_ID, rowMapper, id);
+        return getMappedValueAndCleanMaps(id);
+    }
+
+    @Override
+    public Optional<Student> findByFullName(String firstName, String lastName) {
+        jdbcTemplate.query(SQL_SELECT_BY_FULL_NAME, rowMapper, firstName, lastName);
+        try{
+            Student student = getAllMappedValuesAndCleanMaps().get(0);
+            return Optional.ofNullable(student);
+        } catch (IndexOutOfBoundsException e){ // Список оказался пустой, ученик не найден
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -206,12 +218,6 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     @Override
     public List<Student> findAllWithOnlySelfAttributesByArguments(Map<String, String> columnsAndArgs) {
         return jdbcTemplate.query(SqlSelectQueryGenerator.generateSelectQuery("student", columnsAndArgs), onlySelfAttributesRawMapper);
-    }
-
-    @Override
-    public Optional<Student> find(Long id) {
-        jdbcTemplate.query(SQL_SELECT_BY_ID, rowMapper, id);
-        return getMappedValueAndCleanMaps(id);
     }
 
     @Override

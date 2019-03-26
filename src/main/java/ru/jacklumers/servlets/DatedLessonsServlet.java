@@ -1,7 +1,5 @@
 package ru.jacklumers.servlets;
 
-/* TODO: Сделать добавление и вывод уроков */
-
 import ru.jacklumers.dao.DatedLessonsDao;
 import ru.jacklumers.dao.DatedLessonsJdbcTemplateImpl;
 import ru.jacklumers.models.DatedLesson;

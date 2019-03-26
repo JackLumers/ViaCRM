@@ -45,7 +45,8 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button" data-toggle="dropdown"
+                <a class="nav-link dropdown-toggle" href="#" id="datedLessonsDropdown" role="button"
+                   data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Занятия
                 </a>
@@ -53,8 +54,8 @@
                     <a class="dropdown-item" href="${pageContext.request.contextPath}/datedLessons">
                         Список занятий
                     </a>
-                    <a class="dropdown-item" href="#">
-                        possibleAction
+                    <a class="dropdown-item" href="${pageContext.request.contextPath}/datedLessons/add">
+                        Назначить занятие
                     </a>
                 </div>
             </li>

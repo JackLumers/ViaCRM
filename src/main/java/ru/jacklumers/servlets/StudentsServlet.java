@@ -40,6 +40,7 @@ public class StudentsServlet extends HttpServlet {
         /* Возврат студентов зависит от параметров запроса.
            Если параметры поиска есть, то выводит только студентов,
            найденных по этим параметрам */
+        //TODO: Сделать валидацию поиска по коэффициенту успеваемости
         Enumeration<String> parametersNames = req.getParameterNames();
         Map<String, String> columnsAndArgs = new HashMap<>();
         if (parametersNames.hasMoreElements()) { //Если у запроса есть параметры
