@@ -89,7 +89,7 @@ public class DatedLessonsJdbcTemplateImpl implements DatedLessonsDao {
              * и если нет, то добавляем */
             if (!teachersMap.containsKey(teacherId)) {
                 Teacher teacher = new Teacher(
-                        studentId,
+                        teacherId,
                         rs.getString("teacher_first_name"),
                         rs.getString("teacher_last_name"),
                         new HashMap<DatedLesson, Student>());

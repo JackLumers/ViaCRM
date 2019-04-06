@@ -2,6 +2,9 @@ package ru.jacklumers.models;
 
 import java.util.Map;
 
+/**
+ * Модель сущности преподавателя
+ */
 public class Teacher {
     private Long id;
     private String firstName;
