@@ -110,6 +110,13 @@ public class DatedLessonsJdbcTemplateImpl implements DatedLessonsDao {
         return datedLesson;
     };
 
+    /**
+     * Конструктор DAO с подключением к базе данных через интерфейс DataSource.
+     * SQLException отлавливется в JdbcTemplate
+     *
+     * @param dataSource - фабрика, позволяющая получить источник данных,
+     *                   который эта DataSource представляет.
+     */
     public DatedLessonsJdbcTemplateImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -149,7 +156,7 @@ public class DatedLessonsJdbcTemplateImpl implements DatedLessonsDao {
     //TODO: Проверить работу удаления
     @Override
     public void delete(Long id) {
-        jdbcTemplate.queryForObject(SQL_DELETE, Long.class, id);
+        jdbcTemplate.update(SQL_DELETE, id);
     }
 
     @Override

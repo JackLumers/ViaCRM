@@ -4,7 +4,7 @@ package ru.jacklumers.models.schoolworkConstructor;
  * Модель сущности направления
  */
 public class Specialization {
-    private long id;
+    private Long id;
     private String name;
 
     public Specialization(long id, String name) {
@@ -16,7 +16,7 @@ public class Specialization {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -27,6 +27,5 @@ public class Specialization {
     public void setName(String name) {
         this.name = name;
     }
-
 
 }

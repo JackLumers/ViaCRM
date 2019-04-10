@@ -67,7 +67,7 @@
     </div>
 </nav>
 
-<%-- Таблица учеников --%>
+<%-- Таблица преподавателей --%>
 <div class="container-fluid" style="margin-top: 75px">
     <table class="table table-hover">
         <%-- Поисковые формы --%>

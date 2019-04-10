@@ -74,7 +74,7 @@ public class DatedLessonAddServlet extends HttpServlet {
                     teacherOptional.get());
             datedLessonsDao.save(datedLesson);
         }
-        resp.sendRedirect(req.getContextPath() + "adminsPart/datedLessons/add");
+        resp.sendRedirect(req.getContextPath() + "/adminsPart/datedLessons/add");
     }
 
 }

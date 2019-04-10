@@ -6,5 +6,4 @@ import ru.jacklumers.models.schoolworkConstructor.Template;
 public interface TemplateDao extends CrudDao<Template> {
 
 
-
 }

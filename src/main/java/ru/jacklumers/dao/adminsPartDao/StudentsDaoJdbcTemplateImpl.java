@@ -8,6 +8,7 @@ import ru.jacklumers.models.Teacher;
 import ru.jacklumers.utils.SqlSelectQueryGenerator;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -168,7 +169,7 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     };
 
     /**
-     * Конструктор для подключения к базе данных через интерфейс DataSource.
+     * Конструктор DAO с подключением к базе данных через интерфейс DataSource.
      * SQLException отлавливется в JdbcTemplate
      *
      * @param dataSource - фабрика, позволяющая получить источник данных,
@@ -195,10 +196,10 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     @Override
     public Optional<Student> findByFullName(String firstName, String lastName) {
         jdbcTemplate.query(SQL_SELECT_BY_FULL_NAME, rowMapper, firstName, lastName);
-        try{
+        try {
             Student student = getAllMappedValuesAndCleanMaps().get(0);
             return Optional.ofNullable(student);
-        } catch (IndexOutOfBoundsException e){ // Список оказался пустой, ученик не найден
+        } catch (IndexOutOfBoundsException e) { // Список оказался пустой, ученик не найден
             return Optional.empty();
         }
     }
@@ -257,7 +258,7 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     //TODO: Проверить работу удаления
     @Override
     public void delete(Long id) {
-        jdbcTemplate.queryForObject(SQL_DELETE_BY_ID, Student.class, id);
+        jdbcTemplate.update(SQL_DELETE_BY_ID, id);
     }
 
     private List<Student> getAllMappedValuesAndCleanMaps() {

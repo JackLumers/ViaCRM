@@ -12,6 +12,14 @@ import java.util.Optional;
  *            выполнение данных функций.
  */
 public interface CrudDao<T> {
+
+    /**
+     * Вывод всех сущностей данного типа.
+     *
+     * @return Все сущности данного типа в формате списка.
+     */
+    List<T> findAll();
+
     /**
      * Поиск сущности по id
      *
@@ -44,11 +52,4 @@ public interface CrudDao<T> {
      * @param id - идентификатор сущности.
      */
     void delete(Long id);
-
-    /**
-     * Вывод всех сущностей данного типа.
-     *
-     * @return Все сущности данного типа в формате списка.
-     */
-    List<T> findAll();
 }

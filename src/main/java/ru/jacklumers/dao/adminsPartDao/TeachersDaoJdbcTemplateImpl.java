@@ -127,6 +127,13 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
                 rs.getString("teacher_last_name"));
     };
 
+    /**
+     * Конструктор DAO с подключением к базе данных через интерфейс DataSource.
+     * SQLException отлавливется в JdbcTemplate
+     *
+     * @param dataSource - фабрика, позволяющая получить источник данных,
+     *                   который эта DataSource представляет.
+     */
     public TeachersDaoJdbcTemplateImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         datedLessonsDao = new DatedLessonsJdbcTemplateImpl(dataSource);
@@ -180,9 +187,10 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
         }
     }
 
+    //TODO: Проверить работу удаления
     @Override
     public void delete(Long id) {
-        jdbcTemplate.query(SQL_DELETE_BY_ID, onlySelfAttributesRowMapper, id);
+        jdbcTemplate.update(SQL_DELETE_BY_ID, id);
     }
 
 

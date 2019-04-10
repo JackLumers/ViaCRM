@@ -36,9 +36,4 @@ public class DatedLessonsServlet extends HttpServlet {
         req.setAttribute("datedLessonsFromServer", datedLessons);
         req.getServletContext().getRequestDispatcher("/jsp/adminsPart/datedLessons.jsp").forward(req, resp);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 }
