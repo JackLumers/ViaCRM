@@ -42,13 +42,14 @@ public class SpecializationsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String specToSaveName = req.getParameter("specializationName");
+        String specToSaveName = req.getParameter("specializationNameToSave");
         String specToDeleteIdAsString = req.getParameter("specializationIdToDelete");
 
         if(specToSaveName != null && !specToSaveName.isEmpty()){
             //Сохранение нового направления
             saveSpecialization(specToSaveName);
-        } else if (specToDeleteIdAsString != null && !specToDeleteIdAsString.isEmpty()){
+        }
+        if (specToDeleteIdAsString != null && !specToDeleteIdAsString.isEmpty()){
             //Удаление направления
             deleteSpecialization(Long.parseLong(specToDeleteIdAsString));
         }

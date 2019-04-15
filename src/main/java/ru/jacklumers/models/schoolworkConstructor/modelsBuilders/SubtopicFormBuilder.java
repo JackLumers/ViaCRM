@@ -10,11 +10,11 @@ import java.util.List;
  * @see SubtopicForm
  */
 public class SubtopicFormBuilder {
-    private long id;
+    private Long id;
     private String name;
     private List<Subtopic> subtopics;
 
-    public SubtopicFormBuilder setId(long id) {
+    public SubtopicFormBuilder setId(Long id) {
         this.id = id;
         return this;
     }

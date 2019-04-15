@@ -175,15 +175,15 @@ public class TeachersDaoJdbcTemplateImpl implements TeachersDao {
     }
 
     @Override
-    public void update(Teacher teacherWithId) {
-        if (teacherWithId.getId() == null) {
+    public void update(Teacher modelWithId) {
+        if (modelWithId.getId() == null) {
             throw new NullPointerException
                     ("This model object has no id, but you are trying to update entity by it's id");
         } else {
             jdbcTemplate.update(SQL_UPDATE_TEACHER_BY_ID,
-                    teacherWithId.getId(),
-                    teacherWithId.getFirstName(),
-                    teacherWithId.getLastName());
+                    modelWithId.getId(),
+                    modelWithId.getFirstName(),
+                    modelWithId.getLastName());
         }
     }
 

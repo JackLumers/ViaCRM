@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.jacklumers.models.schoolworkConstructor.Specialization;
 
 import javax.sql.DataSource;
-import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +19,10 @@ public class SpecializationDaoJdbcTemplateImpl implements SpecializationDao {
             "SELECT * FROM specialization WHERE specialization_id = ?";
 
     //language=SQL
+    private final String SQL_SELECT_BY_NAME =
+            "SELECT * FROM specialization WHERE specialization_name = ?";
+
+    //language=SQL
     private final String SQL_DELETE_BY_ID =
             "DELETE FROM specialization WHERE specialization_id = ?";
 
@@ -32,6 +35,7 @@ public class SpecializationDaoJdbcTemplateImpl implements SpecializationDao {
             "UPDATE specialization SET (specialization_name) = ? WHERE specialization_id = ?";
 
     private JdbcTemplate jdbcTemplate;
+
     private RowMapper<Specialization> rowMapper = (rs, rowNum) -> {
         Long specId = rs.getLong("specialization_id");
         return new Specialization(
@@ -62,23 +66,27 @@ public class SpecializationDaoJdbcTemplateImpl implements SpecializationDao {
     }
 
     @Override
+    public Optional<Specialization> findSpecByName(String specName) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_SELECT_BY_NAME, rowMapper, specName));
+    }
+
+    @Override
     public void save(Specialization specialization) {
         jdbcTemplate.update(SQL_INSERT, specialization.getName());
     }
 
     @Override
-    public void update(Specialization specialization) {
-        if (specialization.getId() == null) {
+    public void update(Specialization modelWithId) {
+        if (modelWithId.getId() == null) {
             throw new NullPointerException
                     ("This model object has no id, but you are trying to update entity by it's id");
         } else {
             jdbcTemplate.update(SQL_UPDATE_BY_ID,
-                    specialization.getName(),
-                    specialization.getId());
+                    modelWithId.getName(),
+                    modelWithId.getId());
         }
     }
 
-    //TODO: Проверить работу удаления
     @Override
     public void delete(Long id) {
         jdbcTemplate.update(SQL_DELETE_BY_ID, id);

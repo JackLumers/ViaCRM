@@ -6,12 +6,12 @@ import java.util.List;
  * Модель сущности вида подтемы
  */
 public class SubtopicForm {
-    private long id;
+    private Long id;
     private String name;
 
     private List<Subtopic> subtopics; // Подтемы, ссылающиеся на это направление
 
-    public SubtopicForm(long id, String name, List<Subtopic> subtopics) {
+    public SubtopicForm(Long id, String name, List<Subtopic> subtopics) {
         this.id = id;
         this.name = name;
         this.subtopics = subtopics;
@@ -25,7 +25,7 @@ public class SubtopicForm {
         this.subtopics = subtopics;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

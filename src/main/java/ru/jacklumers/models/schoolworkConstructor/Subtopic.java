@@ -8,30 +8,30 @@ import java.util.Map;
  * Модель сущности подтемы
  */
 public class Subtopic {
-    private long id;
-    private PGInterval interval; // Предполагаемое время обучения
+    private Long id;
+    private PGInterval learningTime; // Предполагаемое время обучения
     private Topic topic; // Тема, с которой связана данная подтема
     private SubtopicForm subtopicForm; // Вид подтемы
     private Map<Realization_Subtopic, Realization> realizations; // Реализации данной подтемы
 
-    public Subtopic(long id, PGInterval interval, Topic topic, SubtopicForm subtopicForm, Map<Realization_Subtopic, Realization> realizations) {
+    public Subtopic(Long id, PGInterval learningTime, Topic topic, SubtopicForm subtopicForm, Map<Realization_Subtopic, Realization> realizations) {
         this.id = id;
-        this.interval = interval;
+        this.learningTime = learningTime;
         this.topic = topic;
         this.subtopicForm = subtopicForm;
         this.realizations = realizations;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public PGInterval getInterval() {
-        return interval;
+    public PGInterval getLearningTime() {
+        return learningTime;
     }
 
-    public void setInterval(PGInterval interval) {
-        this.interval = interval;
+    public void setLearningTime(PGInterval learningTime) {
+        this.learningTime = learningTime;
     }
 
     public Topic getTopic() {

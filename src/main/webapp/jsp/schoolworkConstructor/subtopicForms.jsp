@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <%-- Bootstrap --%>
@@ -92,6 +93,51 @@
         <span class="navbar-text">Конструктор уроков v0.1 </span>
     </div>
 </nav>
+
+<div class="container-fluid" style="margin-top: 75px">
+    <%-- Форма для создания нового вида подтем --%>
+    <form method="post" action="${pageContext.request.contextPath}/schoolworkConstructor/subtopicForms">
+        <div class="form-group">
+            <div class="col-5">
+                <label for="nameForm">Наименование вида подтемы</label>
+                <input class="form-control" id="nameForm" name="subtopicFormNameToSave" type="text"
+                       autocomplete="off">
+                <button type="submit" class="btn btn-primary">Создать новый</button>
+            </div>
+        </div>
+    </form>
+
+    <%-- Таблица направлений --%>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Вид подтемы</th>
+            <th></th>
+        </tr>
+        </thead>
+        <%-- Переменная-счетчик num для обозначения номера строки в таблице --%>
+        <c:set var="num" value="0"/>
+        <%-- items - массив/список, по которому проходится forEach. Он берется из аттрибутов запроса --%>
+        <c:forEach items="${subtopicFormsFromServer}" var="subtopicForm">
+            <tr>
+                <td>${num = num + 1}</td>
+                <td>${subtopicForm.name}</td>
+                <td>
+                    <form method="post"
+                          action="${pageContext.request.contextPath}/schoolworkConstructor/subtopicForms">
+                        <button type="submit"
+                                name="subtopicFormIdToDelete"
+                                value="${subtopicForm.id}"
+                                class="btn btn-danger">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
 
 <%-- Bootstrap --%>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

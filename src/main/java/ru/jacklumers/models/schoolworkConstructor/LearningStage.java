@@ -4,7 +4,7 @@ package ru.jacklumers.models.schoolworkConstructor;
  * Модель сущности этапа обучения
  */
 public class LearningStage {
-    private long id;
+    private Long id;
     private String name;
     private Specialization specialization;
 
@@ -19,7 +19,7 @@ public class LearningStage {
         this.specialization = specialization;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -56,10 +56,12 @@
                     Темы
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/schoolworkConstructor/topics">
+                    <a class="dropdown-item"
+                       href="${pageContext.request.contextPath}/schoolworkConstructor/topics">
                         Темы
                     </a>
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/schoolworkConstructor/subtopics">
+                    <a class="dropdown-item"
+                       href="${pageContext.request.contextPath}/schoolworkConstructor/subtopics">
                         Подтемы
                     </a>
                     <a class="dropdown-item"
@@ -100,7 +102,8 @@
         <div class="form-group">
             <div class="col-5">
                 <label for="nameForm">Наименование направления</label>
-                <input class="form-control" id="nameForm" name="specializationName" type="text" autocomplete="off">
+                <input class="form-control" id="nameForm" name="specializationNameToSave" type="text"
+                       autocomplete="off">
                 <button type="submit" class="btn btn-primary">Открыть направление</button>
             </div>
         </div>
@@ -108,7 +111,6 @@
 
     <%-- Таблица направлений --%>
     <table class="table table-hover">
-        <%-- Поисковые формы --%>
         <thead class="thead-dark">
         <tr>
             <th>#</th>

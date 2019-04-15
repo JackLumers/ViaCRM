@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <%-- Bootstrap --%>
@@ -27,7 +28,8 @@
                     Шаблоны
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/schoolworkConstructor/templates">
+                    <a class="dropdown-item"
+                       href="${pageContext.request.contextPath}/schoolworkConstructor/templates">
                         Шаблоны
                     </a>
                 </div>
@@ -55,10 +57,12 @@
                     Темы
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/schoolworkConstructor/topics">
+                    <a class="dropdown-item"
+                       href="${pageContext.request.contextPath}/schoolworkConstructor/topics">
                         Темы
                     </a>
-                    <a class="dropdown-item" href="${pageContext.request.contextPath}/schoolworkConstructor/subtopics">
+                    <a class="dropdown-item"
+                       href="${pageContext.request.contextPath}/schoolworkConstructor/subtopics">
                         Подтемы
                     </a>
                     <a class="dropdown-item"
@@ -92,6 +96,69 @@
         <span class="navbar-text">Конструктор уроков v0.1 </span>
     </div>
 </nav>
+
+<div class="container-fluid" style="margin-top: 75px">
+    <%-- Добавление нового этапа --%>
+    <form method="post" action="${pageContext.request.contextPath}/schoolworkConstructor/learningStages">
+        <div class="form-group">
+            <div class="col-5">
+                <label for="nameForm">Наименование этапа</label>
+                <input class="form-control" id="nameForm" name="learningStageNameToSave" type="text"
+                       autocomplete="off">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-5">
+                <label for="specForm">Направление</label>
+                <input class="form-control" id="specForm" name="learningStageSpecNameToSave" type="text"
+                       autocomplete="off">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Создать этап</button>
+    </form>
+
+    <%-- Таблица этапов обучения --%>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th>Этап обучения</th>
+            <th>Направление</th>
+            <th></th>
+        </tr>
+        </thead>
+        <c:set var="nam" value="0"/>
+        <c:forEach items="${learningStagesFromServer}" var="learningStage">
+            <tr>
+                <td>${num = num + 1}</td>
+                <td>${learningStage.name}</td>
+                <td>${learningStage.specialization.name}</td>
+                <td>
+                    <form method="post"
+                          action="${pageContext.request.contextPath}/schoolworkConstructor/learningStages">
+                        <button type="submit"
+                                name="learningStageIdToDelete"
+                                value="${learningStage.id}"
+                                class="btn btn-danger">
+                            Удалить этап
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</div>
+
+<%-- Autocomplete --%>
+<script type="text/javascript">
+    <%@include file="/javascript/autocompleteForInput.js"%>
+    var specNamesArray = [];
+    <jsp:useBean id="specializationsFromServer" scope="request" type="java.util.List"/>
+    <c:forEach items="${specializationsFromServer}" var="specialization">
+    specNamesArray.push('${specialization.name}');
+    </c:forEach>
+    autocomplete(document.getElementById("specForm"), specNamesArray);
+</script>
 
 <%-- Bootstrap --%>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

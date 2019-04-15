@@ -30,7 +30,7 @@ public interface StudentsDao extends CrudDao<Student> {
      *
      * @param firstName - имя
      * @param lastName  - фамилия
-     * @return Ученик с таким именем.
+     * @return Ученик с таким именем, либо пустой Optional.
      */
     Optional<Student> findByFullName(String firstName, String lastName);
 

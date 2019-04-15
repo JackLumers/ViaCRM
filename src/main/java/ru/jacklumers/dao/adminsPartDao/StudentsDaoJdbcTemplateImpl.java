@@ -66,8 +66,8 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     private JdbcTemplate jdbcTemplate;
     private DatedLessonsDao datedLessonsDao;
 
-    /* Map'ы для временного хранения отображенных сущностей.
-     * Очищаются после отображения ResultSet'а одной транзакции,
+    /* Map для временного хранения отображенных сущностей.
+     * Должны очищаться после отображения ResultSet'а одной транзакции,
      * чтобы всегда содержать актуальные данные */
     private Map<Long, Student> studentMap = new HashMap<>();
     private Map<Long, DatedLesson> datedLessonMap = new HashMap<>();
@@ -236,22 +236,22 @@ public class StudentsDaoJdbcTemplateImpl implements StudentsDao {
     }
 
     @Override
-    public void update(Student studentWithId) {
-        if (studentWithId.getId() == null) {
+    public void update(Student modelWithId) {
+        if (modelWithId.getId() == null) {
             throw new NullPointerException
                     ("This model object has no id, but you are trying to update entity by it's id");
         } else {
             jdbcTemplate.update(SQL_UPDATE_STUDENT_BY_ID,
-                    studentWithId.getFirstName(),
-                    studentWithId.getLastName(),
-                    studentWithId.getPhone(),
-                    studentWithId.getCity(),
-                    studentWithId.getStreet(),
-                    studentWithId.getHouseNum(),
-                    studentWithId.getCorps(),
-                    studentWithId.getApartmentNum(),
-                    studentWithId.getLearningRate(),
-                    studentWithId.getId());
+                    modelWithId.getFirstName(),
+                    modelWithId.getLastName(),
+                    modelWithId.getPhone(),
+                    modelWithId.getCity(),
+                    modelWithId.getStreet(),
+                    modelWithId.getHouseNum(),
+                    modelWithId.getCorps(),
+                    modelWithId.getApartmentNum(),
+                    modelWithId.getLearningRate(),
+                    modelWithId.getId());
         }
     }
 

@@ -140,16 +140,16 @@ public class DatedLessonsJdbcTemplateImpl implements DatedLessonsDao {
     }
 
     @Override
-    public void update(DatedLesson datedLessonWithId) {
-        if (datedLessonWithId.getId() == null) {
+    public void update(DatedLesson modelWithId) {
+        if (modelWithId.getId() == null) {
             throw new NullPointerException
                     ("This model object has no id, but you are trying to update entity by it's id");
         } else {
             jdbcTemplate.update(SQL_UPDATE_BY_ID,
-                    datedLessonWithId.getId(),
-                    datedLessonWithId.getStudent().getId(),
-                    datedLessonWithId.getTeacher().getId(),
-                    datedLessonWithId.getDate());
+                    modelWithId.getId(),
+                    modelWithId.getStudent().getId(),
+                    modelWithId.getTeacher().getId(),
+                    modelWithId.getDate());
         }
     }
 
